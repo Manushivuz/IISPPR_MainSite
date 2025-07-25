@@ -5,7 +5,7 @@ const Articles = () => {
   const [articleData, setArticleData] = useState([]);
 
   useEffect(() => {
-    fetch("/articles/articleData.json")
+    fetch("/article/articleData.json")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch article data");
