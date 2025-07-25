@@ -6,6 +6,7 @@ import About from './pages/About';
 import Projects from './pages/Projects';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
+import Articles from './pages/Articles'; // ✅ Added
 import Error from './pages/Error';
 import NotFound from './pages/NotFound';
 import SearchNotFound from './pages/SearchNotFound';
@@ -22,6 +23,7 @@ function App() {
             <Route path="/projects" element={<Projects />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/articles" element={<Articles />} /> {/* ✅ New Route */}
             <Route path="/error" element={<Error />} />
             <Route path="/search-not-found" element={<SearchNotFound />} />
             <Route path="*" element={<NotFound />} />
