@@ -1,18 +1,26 @@
 [
   {
     "id": 1,
-    "title": "AI in Agriculture",
-    "author": "Dr. A. Sharma",
-    "description": "Using machine learning to predict crop yield based on environmental factors.",
-    "year": 2024,
-    "pdf": "/research/ai-in-agriculture.pdf"
+    "title": "Advancements in Artificial Intelligence",
+    "author": "Dr. Ayesha Kapoor",
+    "year": 2023
   },
   {
     "id": 2,
-    "title": "Blockchain for Secure Voting",
-    "author": "Prof. R. Mehta",
-    "description": "Designing a blockchain-based system to ensure transparent and tamper-proof voting.",
-    "year": 2023,
-    "pdf": "/research/blockchain-voting.pdf"
+    "title": "Blockchain Applications in Healthcare",
+    "author": "Prof. Karan Mehta",
+    "year": 2024
+  },
+  {
+    "id": 3,
+    "title": "Quantum Computing: The Next Frontier",
+    "author": "Dr. Reena Iyer",
+    "year": 2022
+  },
+  {
+    "id": 4,
+    "title": "Cybersecurity Challenges in Smart Cities",
+    "author": "Dr. Nikhil Bansal",
+    "year": 2025
   }
 ]

@@ -7,6 +7,7 @@ import Gallery from '../pages/Gallery';
 import Projects from '../pages/Projects';
 import Testimonials from '../pages/Testimonials';
 import Reports from '../pages/Reports';
+import Articles from '../pages/Articles'; // ✅ Import Articles
 import NotFound from '../pages/NotFound';
 
 const router = createBrowserRouter([
@@ -20,8 +21,8 @@ const router = createBrowserRouter([
       { path: 'gallery', element: <Gallery /> },
       { path: 'projects', element: <Projects /> },
       { path: 'testimonials', element: <Testimonials /> },
-      { path: 'reports', element: <Reports /> }, 
-
+      { path: 'reports', element: <Reports /> },
+      { path: 'articles', element: <Articles /> }, // ✅ Add this line
       { path: '*', element: <NotFound /> }
     ]
   }
