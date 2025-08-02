@@ -110,19 +110,6 @@ const Projects = () => {
       <div className="flex-1 bg-white">
         <ProjectsList projects={filtered} />
       </div>
-
-      {/* Wavy Divider */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8, duration: 0.6 }}
-        className="relative w-full overflow-hidden" 
-        style={{height:'80px', marginTop:'-40px'}}
-      >
-        <svg className="absolute bottom-0 left-0 w-full h-full" viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill="#3d4d2b" d="M0,0 C480,80 960,0 1440,80 L1440,80 L0,80 Z"></path>
-        </svg>
-      </motion.div>
     </div>
   );
 };
