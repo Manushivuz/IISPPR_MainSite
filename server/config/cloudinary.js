@@ -1,30 +1,53 @@
-import {v2 as cloudinary} from "cloudinary"
-import fs from "fs"
+import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
+import dotenv from "dotenv";
+dotenv.config();
 
-cloudinary.config({ 
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-    api_key: process.env.CLOUDINARY_API_KEY, 
-    api_secret: process.env.CLOUDINARY_API_SECRET  
-  });
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const uploadOnCloudinary = async (localFilePath) => {
-    try {
-        if (!localFilePath) return null
-        //upload the file on cloudinary
-        const response = await cloudinary.uploader.upload(localFilePath, {
-            resource_type: "auto"
-        })
-        // file has been uploaded successfull
-        //console.log("file is uploaded on cloudinary ", response.url);
-        fs.unlinkSync(localFilePath)
-        return response;
+  try {
+    if (!localFilePath) return null;
 
-    } catch (error) {
-        fs.unlinkSync(localFilePath) // remove the locally saved temporary file as the upload operation got failed
-        return null;
-    }
-}
+    console.log("Uploading with resource_type: raw, type: upload");
 
+    const response = await cloudinary.uploader.upload(localFilePath, {
+      resource_type: "raw", // for PDF
+      type: "upload",
+    });
 
+    console.log("Upload successful:", response.secure_url);
 
-export {uploadOnCloudinary}
+    fs.unlinkSync(localFilePath);
+    return response;
+
+  } catch (error) {
+    console.error("Cloudinary upload error:", error);
+    if (fs.existsSync(localFilePath)) fs.unlinkSync(localFilePath);
+    return null;
+  }
+};
+
+const deleteFromCloudinary = async (publicId) => {
+  try {
+    console.log("Attempting to delete from Cloudinary:", publicId);
+    
+    const result = await cloudinary.uploader.destroy(publicId, {
+      resource_type: "raw",
+      type: "upload",
+    });
+
+    console.log("Cloudinary delete result:", result);
+    return result;
+
+  } catch (error) {
+    console.error("Error deleting from Cloudinary:", error);
+    return null;
+  }
+};
+
+export { uploadOnCloudinary, deleteFromCloudinary };
