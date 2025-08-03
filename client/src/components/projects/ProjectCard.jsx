@@ -71,35 +71,25 @@ const ProjectCard = ({ project }) => {
 const StyledWrapper = styled.div`
   .card {
     width: 100%;
-    height: 420px;
-    background: #171717;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0px 0px 3px 1px #00000088;
-    cursor: pointer;
-    border-radius: 1rem;
-  }
-
-  .card .content {
-    border-radius: 1rem;
-    background: #171717;
-    width: calc(100% - 4px);
-    height: calc(100% - 4px);
-    z-index: 1;
-    padding: 0;
-    color: white;
+    height: auto;
+    background: #fafafa;
+    border: 1px solid #e5e7eb;
     display: flex;
     flex-direction: column;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
   }
 
   .image-container {
-    position: relative;
     width: 100%;
-    height: 200px;
+    height: 180px;
     overflow: hidden;
   }
 
@@ -107,143 +97,83 @@ const StyledWrapper = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
+    transition: transform 0.3s ease;
   }
 
   .card:hover .project-image {
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 
   .category-badge {
     position: absolute;
     top: 1rem;
     left: 1rem;
-    background: rgba(255, 255, 255, 0.9);
-    color: #171717;
-    padding: 0.5rem 1rem;
+    background: #f97316; 
+    color: white;
+    padding: 0.25rem 0.75rem;
     border-radius: 9999px;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    backdrop-filter: blur(4px);
   }
 
   .text-content {
-    padding: 1.5rem;
-    flex: 1;
+    padding: 1.25rem;
     display: flex;
     flex-direction: column;
+    flex: 1;
   }
 
   .title {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 700;
-    margin-bottom: 0.75rem;
-    color: white;
+    margin-bottom: 0.5rem;
+    color: #0f172a;
   }
 
   .description {
     font-size: 0.875rem;
-    color: #a3a3a3;
+    color: #475569;
     margin-bottom: 1rem;
     line-height: 1.5;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
   .location {
     display: flex;
     align-items: center;
-    color: #a3a3a3;
+    color: #64748b;
     font-size: 0.875rem;
     margin-bottom: 1rem;
   }
 
   .location-icon {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1rem;
+    height: 1rem;
     margin-right: 0.5rem;
-    color: #4ade80;
+    color: #94a3b8;
   }
 
   .learn-more {
+    align-self: flex-start;
     display: inline-flex;
     align-items: center;
-    color: #4ade80;
+    background: #0f172a;
+    color: white;
+    font-size: 0.875rem;
     font-weight: 500;
-    margin-top: auto;
-    transition: color 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    transition: background 0.3s ease;
+    text-decoration: none;
   }
 
   .learn-more:hover {
-    color: #22c55e;
+    background: #1e293b;
   }
 
   .arrow-icon {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1rem;
+    height: 1rem;
     margin-left: 0.5rem;
-    transition: transform 0.3s ease;
-  }
-
-  .learn-more:hover .arrow-icon {
-    transform: translateX(4px);
-  }
-
-  .content::before {
-    opacity: 0;
-    transition: opacity 300ms;
-    content: " ";
-    display: block;
-    background: white;
-    width: 5px;
-    height: 50px;
-    position: absolute;
-    filter: blur(50px);
-    overflow: hidden;
-  }
-
-  .card:hover .content::before {
-    opacity: 1;
-  }
-
-  .card::before {
-    opacity: 0;
-    content: " ";
-    position: absolute;
-    display: block;
-    width: 80px;
-    height: 360px;
-    background: linear-gradient(#4ade80, #22c55e);
-    transition: opacity 300ms;
-    animation: rotation_9018 8000ms infinite linear;
-    animation-play-state: paused;
-  }
-
-  .card:hover::before {
-    opacity: 1;
-    animation-play-state: running;
-  }
-
-  .card::after {
-    position: absolute;
-    content: " ";
-    display: block;
-    width: 250px;
-    height: 360px;
-    background: #17171733;
-    backdrop-filter: blur(50px);
-  }
-
-  @keyframes rotation_9018 {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(360deg);
-    }
   }
 `;
 
