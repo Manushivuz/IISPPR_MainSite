@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Handshake, Users, Heart, Globe, Search } from "lucide-react";
 
-// Stats Section Data
+// Stats Data
 const stats = [
   {
     icon: <Handshake className="w-10 h-10 text-[#0F1B2B]" />,
@@ -26,6 +26,7 @@ const stats = [
   },
 ];
 
+// Animated Counter
 const AnimatedCounter = ({ numericValue }) => {
   const [count, setCount] = useState(0);
   const counterRef = useRef(null);
@@ -69,6 +70,7 @@ const AnimatedCounter = ({ numericValue }) => {
   );
 };
 
+// Stat Card
 const StatCard = ({ icon, numericValue, label }) => (
   <div className="bg-[#EAF3FB] rounded-lg shadow-md flex flex-col items-center text-center p-6">
     <div className="bg-white p-4 rounded-full border border-gray-300">
@@ -79,28 +81,27 @@ const StatCard = ({ icon, numericValue, label }) => (
   </div>
 );
 
-// ✅ Updated Report Card Design
+// Report Card
 const ReportCard = ({ title, date, description }) => (
-  <div className="w-[1267.68px] h-[285px] bg-white rounded-2xl shadow-md flex mx-auto overflow-hidden">
-    {/* Image placeholder */}
-    <div className="w-[300px] h-full bg-gray-300" />
+  <div className="w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-md flex flex-col sm:flex-row overflow-hidden transform transition duration-300 hover:shadow-xl hover:scale-[1.01]">
+    {/* Image */}
+    <div className="w-full sm:w-[300px] h-[200px] sm:h-auto bg-gray-300" />
 
     {/* Content */}
     <div className="flex flex-col justify-between p-6 flex-1">
       <div className="flex flex-col gap-2">
         <p className="text-sm text-orange-500 font-semibold">{date}</p>
-        <h3 className="text-xl font-bold text-[#0F1B2B]">{title}</h3>
-        <p className="text-sm text-gray-500">
-          {description}
-        </p>
+        <h3 className="text-lg sm:text-xl font-bold text-[#0F1B2B]">{title}</h3>
+        <p className="text-sm text-gray-500 line-clamp-4">{description}</p>
       </div>
-      <button className="bg-[#0F1B2B] text-white px-6 py-2 rounded-full text-sm self-end mt-4">
+      <button className="bg-[#0F1B2B] text-white px-6 py-2 rounded-full text-sm self-end mt-4 hover:bg-[#1e2a3d] transition duration-300 transform hover:scale-105">
         Learn more
       </button>
     </div>
   </div>
 );
 
+// Main Reports Component
 const Reports = () => {
   return (
     <div className="w-full font-[Playfair]">
@@ -109,7 +110,7 @@ const Reports = () => {
         <div className="max-w-screen-xl mx-auto">
           <div className="flex flex-col lg:flex-row justify-between gap-10 mb-16">
             <div className="lg:w-1/2">
-              <h1 className="text-5xl font-bold mb-4">Reports</h1>
+              <h1 className="text-4xl sm:text-5xl font-bold mb-4">Reports</h1>
               <p className="text-gray-300">
                 Lorem Ipsum Dolor Sit Amet, Consectetur Adipisicing Elit. Fusce
                 Elementum Sem Quis Eros Posuere. Vitae Tempor Tellus Porta. Sed
@@ -137,7 +138,7 @@ const Reports = () => {
       <section className="bg-white w-full py-20 px-4">
         <div className="max-w-screen-xl mx-auto">
           <div className="flex flex-col sm:flex-row justify-between items-center mb-10">
-            <h2 className="text-3xl font-bold text-[#0F1B2B] mb-4 sm:mb-0">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#0F1B2B] mb-4 sm:mb-0">
               Reports
             </h2>
             <div className="flex items-center border border-gray-300 rounded-full px-4 py-2 w-full sm:w-80">
@@ -150,7 +151,7 @@ const Reports = () => {
             </div>
           </div>
 
-          <div className="space-y-6">
+          <div className="flex flex-col gap-6">
             {[1, 2, 3, 4].map((i) => (
               <ReportCard
                 key={i}
