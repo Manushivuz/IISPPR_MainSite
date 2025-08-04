@@ -82,7 +82,7 @@ const Hero = () => {
   ];
 
   return (
-    <section className="relative z-20 flex-grow w-full min-h-[90vh] bg-[url('/home/herobg.jpg')] bg-cover bg-center bg-fixed">
+    <section className="relative z-20 flex-grow w-full min-h-[90vh] bg-[url('/home/herobg.webp')] bg-cover bg-center bg-fixed">
       {/* Enhanced gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60 backdrop-blur-sm z-10"></div>
 
