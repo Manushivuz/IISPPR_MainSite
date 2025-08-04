@@ -13,14 +13,11 @@ const uploadOnCloudinary = async (localFilePath) => {
   try {
     if (!localFilePath) return null;
 
-    console.log("Uploading with resource_type: raw, type: upload");
-
     const response = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "raw", // for PDF
       type: "upload",
     });
 
-    console.log("Upload successful:", response.secure_url);
 
     fs.unlinkSync(localFilePath);
     return response;
@@ -34,20 +31,21 @@ const uploadOnCloudinary = async (localFilePath) => {
 
 const deleteFromCloudinary = async (publicId) => {
   try {
-    console.log("Attempting to delete from Cloudinary:", publicId);
     
     const result = await cloudinary.uploader.destroy(publicId, {
       resource_type: "raw",
       type: "upload",
+      invalidate: true,
     });
 
-    console.log("Cloudinary delete result:", result);
     return result;
-
   } catch (error) {
     console.error("Error deleting from Cloudinary:", error);
     return null;
   }
 };
+
+
+
 
 export { uploadOnCloudinary, deleteFromCloudinary };
