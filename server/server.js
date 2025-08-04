@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import documentRoutes from "./routes/documentRoutes.js";
+import adRoutes from "./routes/adRoutes.js";
 
 // Load env vars
 
@@ -25,6 +26,9 @@ app.use("/api/documents", documentRoutes);
 app.get("/", (req, res) => {
   res.send("Mainsite running...");
 });
+
+// API routes
+app.use("/api/ads", adRoutes);
 
 // Listen
 const PORT = process.env.PORT || 5000;
