@@ -3,7 +3,7 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
-import articleRoutes from "./routes/articleRoutes.js";
+import documentRoutes from "./routes/documentRoutes.js";
 import adRoutes from "./routes/adRoutes.js";
 
 // Load env vars
@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-app.use("/api/articles", articleRoutes);
+app.use("/api/documents", documentRoutes);
 
 
 // Test route
