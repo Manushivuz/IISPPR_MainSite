@@ -40,8 +40,8 @@ const TestimonialWallpapers = () => {
 
                     {/* Heading box */}
                     <div className="max-w-lg md:max-w-xl lg:max-w-2xl mb-6 md:mb-8">
-                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium">Testimonials</h2>
-                        <p className="mt-2 md:mt-4 text-base md:text-lg text-white/90 ml-1">
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif">Testimonials</h2>
+                        <p className="mt-2 md:mt-4 text-base md:text-lg text-white/90 ml-1 font-serif">
                             Hear from our farmers and partners who've worked with us and seen great results in the field.
                         </p>
                     </div>

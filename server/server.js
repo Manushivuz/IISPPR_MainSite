@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import adRoutes from "./routes/adRoutes.js";
 import pageAdRoutes from "./routes/pageAd.js";
+import testimonialRoutes from "./routes/testimonialRoutes.js";
 
 // Load env vars
 
@@ -31,6 +32,7 @@ app.get("/", (req, res) => {
 // API routes
 app.use("/api/ads", adRoutes);
 app.use("/api/pageads", pageAdRoutes);
+app.use("/api/testimonials", testimonialRoutes)
 
 // Listen
 const PORT = process.env.PORT || 5000;
