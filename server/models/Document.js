@@ -1,7 +1,12 @@
 import mongoose from "mongoose";
 
-const articleSchema = new mongoose.Schema(
+const documentSchema = new mongoose.Schema(
   {
+    type: {
+      type: String,
+      enum: ["article", "report"],
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -22,6 +27,5 @@ const articleSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Article = mongoose.model("Article", articleSchema);
-
-export default Article;
+const Document = mongoose.model("Document", documentSchema);
+export default Document;
