@@ -55,48 +55,56 @@ export const assignAdToPages = async (req, res) => {
 
 
 export const getAdsByPage = async (req, res) => {
-  try {
-    const { page } = req.query;
+  const { page, position } = req.query;
 
-    if (!page) {
-      return res.status(400).json({ message: "Query parameter 'page' is required." });
-    }
-
-    const pageEntry = await PageAd.findOne({ page: page.toLowerCase().trim() });
-
-    if (!pageEntry || pageEntry.adIds.length === 0) {
-      return res.status(404).json({ message: `No ads found for page '${page}'.` });
-    }
-
-    const ads = await Advertisement.find({ _id: { $in: pageEntry.adIds } });
-
-    res.status(200).json({ page: pageEntry.page, ads,position: pageEntry.position });
-
-  } catch (error) {
-    console.error("Error fetching ads by page:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+  const query = { page };
+  if (position) {
+    query.position = position;
   }
+
+  const pageAd = await PageAd.findOne(query).populate("adIds");
+
+  if (!pageAd) return res.status(404).json({ message: "No ads found" });
+
+  res.status(200).json({
+    page: pageAd.page,
+    position: pageAd.position,
+    ads: pageAd.adIds,
+  });
 };
 
 
+
+// DELETE /api/pageads
 export const deletePageAdAssignments = async (req, res) => {
-  try {
-    const { pageName } = req.params;
+  const { adId, page, position } = req.body;
 
-    if (!pageName) {
-      return res.status(400).json({ message: "Page name is required." });
+  if (!adId || !page || !position) {
+    return res.status(400).json({ message: "adId, page, and position are required." });
+  }
+
+  try {
+    const pageAd = await PageAd.findOne({ page, position });
+
+    if (!pageAd) {
+      return res.status(404).json({ message: "Ad assignment not found." });
     }
 
-    const result = await PageAd.deleteOne({ page: pageName });
+    // Remove the ad from the assigned ads array
+    pageAd.adIds = pageAd.adIds.filter(
+      (ad) => ad._id.toString() !== adId.toString()
+    );
 
-    res.status(200).json({
-      message: `Deleted ${result.deletedCount} ad assignment(s) from page '${pageName}'.`,
-    });
-  } catch (error) {
-    console.error("Error deleting page ad assignments:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    await pageAd.save();
+
+    return res.status(200).json({ message: "Ad unassigned successfully." });
+  } catch (err) {
+    console.error("Error unassigning ad:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+
 
 export const getAllPageAds = async (req, res) => {
   try {

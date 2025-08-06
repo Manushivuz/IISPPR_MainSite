@@ -35,3 +35,37 @@
   will-change: transform;
   backface-visibility: hidden;
 }
+
+
+.ad-section {
+    width: 100%;
+    background: #f8f9fa;
+    padding: 15px 0;
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    margin: 0 auto;
+}
+
+.ad-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 15px;
+    background: white;
+    border: 1px dashed #adb5bd;
+    text-align: center;
+    color: #6c757d;
+}
+
+.ad-label {
+    font-size: 0.75rem;
+    color: #adb5bd;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .ad-container {
+        padding: 10px;
+    }
+}

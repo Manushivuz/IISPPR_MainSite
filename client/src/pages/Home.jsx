@@ -7,8 +7,12 @@ import TestimonialsSection from '../components/home/TestimonialsSection';
 import AboutSection from '../components/home/AboutSection';
 
 const Home = () => {
+  const topAdImage = "/images/ad1.png"; // e.g., "/ads/top-banner.jpg"
+  const bottomAdImage = null; // e.g., "/ads/bottom-banner.jpg"
+
   return (
     <div className="overflow-x-hidden w-full">
+      
       {/* Hero Section */}
       <Hero />
 	  

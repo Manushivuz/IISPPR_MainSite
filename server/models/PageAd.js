@@ -5,9 +5,8 @@ const pageAdSchema = new mongoose.Schema(
     page: {
       type: String,
       required: true,
-      unique: true, // each page should be listed only once
       trim: true,
-      lowercase: true
+      lowercase: true,
     },
     position: {
       type: String,
@@ -23,5 +22,8 @@ const pageAdSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+pageAdSchema.index({ page: 1, position: 1 }, { unique: true });
+
 
 export default mongoose.model("PageAd", pageAdSchema);

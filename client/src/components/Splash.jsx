@@ -90,7 +90,7 @@ const EnvironmentalSplash = () => {
                                 transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
                             >
                                 {/* Earth/Globe Icon */}
-                                <img src="/images/IISPPR_LOGO.png" class="h-30 w-30" alt="my icon"/>
+                                <img src="/images/IISPPR_LOGO.png" className="h-30 w-30" alt="my icon"/>
                             </motion.div>
                         </div>
 
