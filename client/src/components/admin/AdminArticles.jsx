@@ -5,7 +5,7 @@ const AdminArticles = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const backend = import.meta.env.VITE_BASE_URL;
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
@@ -16,7 +16,7 @@ const AdminArticles = () => {
 
   const fetchArticles = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/documents?type=article");
+      const res = await fetch(`${backend}/api/documents?type=article`);
       const data = await res.json();
       if (data.success) {
         setArticles(data.documents);
@@ -35,7 +35,7 @@ const AdminArticles = () => {
     if (!window.confirm("Are you sure you want to delete this article?")) return;
 
     try {
-      const res = await fetch("http://localhost:5000/api/documents?type=article", {
+      const res = await fetch(`${backend}/api/documents?type=article`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids: [id] }),
@@ -64,7 +64,7 @@ const AdminArticles = () => {
     form.append("pdf", formData.pdf);
 
     try {
-      const res = await fetch("http://localhost:5000/api/documents", {
+      const res = await fetch(`${backend}/api/documents`, {
         method: "POST",
         body: form,
       });

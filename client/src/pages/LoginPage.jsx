@@ -2,66 +2,68 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-  });
-
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
+  const backend = import.meta.env.VITE_BASE_URL;
 
   const handleChange = (e) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isSignUp) {
-      // Handle sign up logic here
-      console.log("🔐 Signing Up with:", formData);
-      // Optionally navigate after sign up
-      // navigate('/admin/ads');
-    } else {
-      // Handle sign in logic here
-      console.log("🔓 Signing In with:", formData);
-      if (formData.email && formData.password) {
-        // On successful sign in, redirect to admin dashboard
-        navigate('/admin/ads');
+
+    if (!formData.email || !formData.password) {
+      return setError('Please enter both email and password');
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch(`${backend}/api/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        // Save token if present
+        if (data.token) {
+          localStorage.setItem('adminToken', data.token);
+        }
+
+        navigate('/admin');
       } else {
-        alert("Please fill in both email and password");
+        setError(data.message || 'Login failed');
       }
+    } catch (err) {
+      console.error(err);
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br  p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-indigo-600 p-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 animate-fade-in">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          {isSignUp ? 'Create Account' : 'Login to Your Account'}
+          Admin Login
         </h2>
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          {isSignUp && (
-            <input
-              type="text"
-              name="fullName"
-              placeholder="Full Name"
-              value={formData.fullName}
-              onChange={handleChange}
-              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-            />
-          )}
           <input
             type="email"
             name="email"
-            placeholder="Email"
+            placeholder="Admin Email"
             value={formData.email}
             onChange={handleChange}
-            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
           <input
             type="password"
@@ -69,29 +71,27 @@ const LoginPage = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
+
+          {error && (
+            <p className="text-sm text-red-500 -mt-2">{error}</p>
+          )}
+
           <button
             type="submit"
-            className={`w-full py-3 mt-2 rounded-lg font-semibold text-white ${
-              isSignUp ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-500 hover:bg-blue-600'
-            } transition duration-200`}
+            disabled={loading}
+            className={`w-full py-3 mt-2 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition duration-200 ${
+              loading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
-            {isSignUp ? 'Sign Up' : 'Sign In'}
+            {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
 
-        <div className="mt-6 text-center">
-          <p className="text-gray-600 text-sm">
-            {isSignUp ? 'Already have an account?' : "Don't have an account?"}
-            <button
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="ml-2 text-purple-600 hover:underline font-medium"
-            >
-              {isSignUp ? 'Sign In' : 'Sign Up'}
-            </button>
-          </p>
-        </div>
+        <p className="mt-6 text-center text-sm text-gray-500">
+          Only authorized admin can log in.
+        </p>
       </div>
     </div>
   );
