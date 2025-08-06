@@ -15,6 +15,7 @@ const AdminAdManager = () => {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [selectedIds, setSelectedIds] = useState([]);
+  const backend = import.meta.env.VITE_BASE_URL;
 
   console.log("allAds content:", allAds);
 
@@ -25,7 +26,7 @@ const AdminAdManager = () => {
 
   const fetchAds = async () => {
     try {
-      const res = await axios.get("/api/ads"); // ✅ gets all ads from Advertisement model
+      const res = await axios.get(`${backend}/api/ads`); // ✅ gets all ads from Advertisement model
       setAllAds(res.data); // res.data is an array
     } catch (err) {
       console.error("Failed to fetch ads:", err);
@@ -36,7 +37,7 @@ const AdminAdManager = () => {
 
   const fetchPageAds = async () => {
     try {
-      const res = await axios.get("/api/pageads/getall");
+      const res = await axios.get(`${backend}/api/pageads/getall`);
 
       const pageMap = {};
 
@@ -63,7 +64,7 @@ const AdminAdManager = () => {
 
   const handleAssign = async (adId) => {
     try {
-      await axios.post("/api/pageads", {
+      await axios.post(`${backend}/api/pageads`, {
         adId,
         pages: [activePage],
         position: assignPosition,
@@ -79,7 +80,7 @@ const AdminAdManager = () => {
 
   const handleAssign1 = async (adId) => {
     try {
-      await axios.post("/api/pageads", {
+      await axios.post(`${backend}/api/pageads`, {
         adId,
         pages: [activePage],
         position: assignPosition,
@@ -95,7 +96,7 @@ const AdminAdManager = () => {
 
   const handleUnassign = async (adId, position) => {
     try {
-      await axios.delete("/api/pageads/unassign", {
+      await axios.delete(`${backend}/api/pageads/unassign`, {
         data: { adId, page: activePage, position },
       });
       setMessage("Ad unassigned successfully.");
@@ -120,7 +121,7 @@ const AdminAdManager = () => {
     formData.append("description", description);
 
     try {
-      await axios.post("/api/ads", formData, {
+      await axios.post(`${backend}/api/ads`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setTitle("");
@@ -138,7 +139,7 @@ const AdminAdManager = () => {
     if (selectedIds.length === 0) return alert("Select ads to delete.");
 
     try {
-      await axios.delete("/api/ads", {
+      await axios.delete(`${backend}/api/ads`, {
         data: { ids: selectedIds },
       });
       setSelectedIds([]);

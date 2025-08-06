@@ -7,11 +7,12 @@ const Ads = () => {
   const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showManager, setShowManager] = useState(false); // ✅ State to toggle admin view
+  const backend = import.meta.env.VITE_BASE_URL;
 
   useEffect(() => {
     const fetchAds = async () => {
       try {
-        const res = await axios.get("/api/ads");
+        const res = await axios.get(`${backend}/api/ads`);
         setAds(res.data);
       } catch (error) {
         console.error("Error fetching ads:", error);
