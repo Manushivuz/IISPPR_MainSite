@@ -33,6 +33,7 @@ const AnimatedCounter = ({ numericValue }) => {
   const [count, setCount] = useState(0);
   const counterRef = useRef(null);
   const isInView = useInView(counterRef, { once: true });
+  
 
   useEffect(() => {
     if (isInView) {
@@ -88,12 +89,13 @@ const Reports = () => {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const backend = import.meta.env.VITE_BASE_URL;
 
   useEffect(() => {
     const fetchReports = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/documents?type=report"
+          `${backend}/api/documents?type=report`
         );
         setReports(res.data.documents || []);
         setLoading(false);
