@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Handshake, Users, Heart, Globe, Search } from "lucide-react";
+import axios from "axios";
+import ReportCard from "../components/report/ReportCard";
 
 // Stats Data
 const stats = [
@@ -81,40 +83,42 @@ const StatCard = ({ icon, numericValue, label }) => (
   </div>
 );
 
-// Report Card
-const ReportCard = ({ title, date, description }) => (
-  <div className="w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-md flex flex-col sm:flex-row overflow-hidden transform transition duration-300 hover:shadow-xl hover:scale-[1.01]">
-    {/* Image */}
-    <div className="w-full sm:w-[300px] h-[200px] sm:h-auto bg-gray-300" />
-
-    {/* Content */}
-    <div className="flex flex-col justify-between p-6 flex-1">
-      <div className="flex flex-col gap-2">
-        <p className="text-sm text-orange-500 font-semibold">{date}</p>
-        <h3 className="text-lg sm:text-xl font-bold text-[#0F1B2B]">{title}</h3>
-        <p className="text-sm text-gray-500 line-clamp-4">{description}</p>
-      </div>
-      <button className="bg-[#0F1B2B] text-white px-6 py-2 rounded-full text-sm self-end mt-4 hover:bg-[#1e2a3d] transition duration-300 transform hover:scale-105">
-        Learn more
-      </button>
-    </div>
-  </div>
-);
-
-// Main Reports Component
+// Main Component
 const Reports = () => {
+  const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:5000/api/documents?type=report"
+        );
+        setReports(res.data.documents || []);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching reports:", err);
+        setError("Failed to load reports.");
+        setLoading(false);
+      }
+    };
+
+    fetchReports();
+  }, []);
+
   return (
     <div className="w-full font-[Playfair]">
-      {/* ==================== STATS SECTION ==================== */}
+      {/* Stats Section */}
       <section className="bg-[#0F1B2B] w-full py-20 px-4 text-white">
         <div className="max-w-screen-xl mx-auto">
           <div className="flex flex-col lg:flex-row justify-between gap-10 mb-16">
             <div className="lg:w-1/2">
               <h1 className="text-4xl sm:text-5xl font-bold mb-4">Reports</h1>
-              <p className="text-gray-300">
-                Lorem Ipsum Dolor Sit Amet, Consectetur Adipisicing Elit. Fusce
-                Elementum Sem Quis Eros Posuere. Vitae Tempor Tellus Porta. Sed
-                Ultricies Libero Quis Sem Porttitor Lacinia. Nunc A Ultrices Ex.
+              <p className="text-gray-300 test-lg">
+                Explore our comprehensive reports that highlight our impact and
+                the communities we serve. Each report provides insights into our
+                initiatives, challenges, and successes over the years.
               </p>
             </div>
           </div>
@@ -134,7 +138,7 @@ const Reports = () => {
         </div>
       </section>
 
-      {/* ==================== REPORTS LIST SECTION ==================== */}
+      {/* Reports List Section */}
       <section className="bg-white w-full py-20 px-4">
         <div className="max-w-screen-xl mx-auto">
           <div className="flex flex-col sm:flex-row justify-between items-center mb-10">
@@ -151,13 +155,21 @@ const Reports = () => {
             </div>
           </div>
 
+          {/* Reports Grid */}
           <div className="flex flex-col gap-6">
-            {[1, 2, 3, 4].map((i) => (
+            {loading && <p>Loading reports...</p>}
+            {error && <p className="text-red-500">{error}</p>}
+            {!loading && !error && reports.length === 0 && (
+              <p className="text-gray-500">No reports found.</p>
+            )}
+            {reports.map((report) => (
               <ReportCard
-                key={i}
-                title={`Report ${i}`}
-                date="Date"
-                description="Lorem Ipsum Dolor Sit Amet, Consectetur Adipisicing Elit. Fusce Elementum Sem Quis Eros Posuere. Vitae Tempor Tellus Porta. Sed Ultricies Libero Quis Sem Porttitor Lacinia. Nunc A Ultrices Ex."
+                key={report._id}
+                title={report.title}
+                author_names={report.author_names}
+                date={report.date}
+                description={report.description}
+                pdfUrl={report.pdfUrl}
               />
             ))}
           </div>
