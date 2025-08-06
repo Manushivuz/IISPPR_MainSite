@@ -9,11 +9,20 @@ import Testimonials from '../pages/Testimonials';
 import Reports from '../pages/Reports';
 import Articles from '../pages/Articles'; // ✅ Import Articles
 import NotFound from '../pages/NotFound';
+import LoginPage from '../pages/LoginPage';
+import AdminLayout from '../components/admin/AdminLayout';
+
+import Ads from '../components/admin/Ads';
+import AdminReports from '../components/admin/AdminReports'; // your admin report page
+import AdminArticles from '../components/admin/AdminArticles'; // your admin articles page
+import AdminTestimonials from '../components/admin/AdminTestimonial';
+import PageWithAd from '../components/advertisement/PageWithAd';
+import AdminAdManager from '../components/admin/AdminAdManager';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />,
+    element: <PageWithAd />,
     children: [
       { index: true, element: <Home /> },
       { path: 'about', element: <About /> },
@@ -23,7 +32,38 @@ const router = createBrowserRouter([
       { path: 'testimonials', element: <Testimonials /> },
       { path: 'reports', element: <Reports /> },
       { path: 'articles', element: <Articles /> }, // ✅ Add this line
-      { path: '*', element: <NotFound /> }
+      { path: '*', element: <NotFound /> },
+      {
+        path: '/login', 
+        element: <LoginPage />,
+      },
+    ]
+  },
+  
+  {
+    path: '/admin',
+    element: <AdminLayout />,
+    children: [
+      { path: 'ads', element: <Ads /> },
+      {path: 'adminads', element: <AdminAdManager/>},
+      { path: 'report', element: <AdminReports /> },
+      { path: 'articles', element: <AdminArticles /> },
+      { path: 'testimonials', element: <AdminTestimonials /> },
+    ]
+  },
+  {
+    path: '/login', // ✅ Separate route outside Layout
+    element: <LoginPage />,
+  },
+  {
+    path: '/admin',
+    element: <AdminLayout />,
+    children: [
+      { path: 'ads', element: <Ads /> },
+      {path: 'adminads', element: <AdminAdManager/>},
+      { path: 'report', element: <AdminReports /> },
+      { path: 'articles', element: <AdminArticles /> },
+      { path: 'testimonials', element: <AdminTestimonials /> },
     ]
   }
 ]);

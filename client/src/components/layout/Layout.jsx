@@ -6,7 +6,7 @@ import Splash from "../Splash"
 import { useSmoothScroll } from '../../utils/useSmoothScroll';
 import { AnimatePresence } from "framer-motion"
 
-const Layout = () => {
+const Layout = ({ children }) => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const [searchOpen, setSearchOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
@@ -16,6 +16,11 @@ const Layout = () => {
     const navigate = useNavigate()
     const searchRef = useRef(null)
     const searchInputRef = useRef(null)
+
+    // These can come via props or backend later; mock for now
+    const topAdImage = "/images/ad1.png"; // e.g., "/ads/top-banner.jpg"
+    const bottomAdImage = null; // e.g., "/ads/bottom-banner.jpg"
+
 
     // Search data - you can expand this with more content
     const searchData = [
@@ -123,6 +128,7 @@ const Layout = () => {
                 <Splash key="splash" />
             ) : (
                 <div className="flex flex-col min-h-screen">
+                    
                     <header className="bg-gray-900 shadow-lg sticky top-0 z-50">
                         <nav className="container mx-auto px-4 py-4">
                             <div className="flex justify-between items-center">
@@ -426,13 +432,24 @@ const Layout = () => {
                             )}
                         </nav>
                     </header>
+                    
+                    
+
 
                     <main className="flex-grow">
                         <Outlet />
                     </main>
 
+                    {children}
+                    
                     {/* Responsive Footer */}
                     <footer className="bg-gray-900 text-white py-8 md:py-12">
+                        {bottomAdImage && (
+                            <div className="w-full bg-white flex justify-center border-t border-gray-300">
+                                <img src={bottomAdImage} alt="Bottom Advertisement" className="max-w-full h-auto" />
+                            </div>
+                        )}
+
                         <div className="container mx-auto px-4 md:px-6">
                             {/* Main Footer Content */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 lg:gap-8">
@@ -606,6 +623,7 @@ const Layout = () => {
                             <div className="border-t border-gray-700 mt-6 md:mt-8 pt-4 md:pt-6 text-center">
                                 <p className="text-gray-400 text-sm">© {new Date().getFullYear()} IISPPR. All rights reserved.</p>
                             </div>
+                            <Link to="/login" className="hover:underline">Admin ?</Link>
                         </div>
                     </footer>
                 </div>
