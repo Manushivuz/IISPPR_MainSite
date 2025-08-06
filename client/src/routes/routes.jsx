@@ -16,11 +16,13 @@ import Ads from '../components/admin/Ads';
 import AdminReports from '../components/admin/AdminReports'; // your admin report page
 import AdminArticles from '../components/admin/AdminArticles'; // your admin articles page
 import AdminTestimonials from '../components/admin/AdminTestimonial';
+import PageWithAd from '../components/advertisement/PageWithAd';
+import AdminAdManager from '../components/admin/AdminAdManager';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />,
+    element: <PageWithAd />,
     children: [
       { index: true, element: <Home /> },
       { path: 'about', element: <About /> },
@@ -42,6 +44,22 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       { path: 'ads', element: <Ads /> },
+      {path: 'adminads', element: <AdminAdManager/>},
+      { path: 'report', element: <AdminReports /> },
+      { path: 'articles', element: <AdminArticles /> },
+      { path: 'testimonials', element: <AdminTestimonials /> },
+    ]
+  },
+  {
+    path: '/login', // ✅ Separate route outside Layout
+    element: <LoginPage />,
+  },
+  {
+    path: '/admin',
+    element: <AdminLayout />,
+    children: [
+      { path: 'ads', element: <Ads /> },
+      {path: 'adminads', element: <AdminAdManager/>},
       { path: 'report', element: <AdminReports /> },
       { path: 'articles', element: <AdminArticles /> },
       { path: 'testimonials', element: <AdminTestimonials /> },
