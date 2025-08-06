@@ -623,6 +623,7 @@ const Layout = ({ children }) => {
                             <div className="border-t border-gray-700 mt-6 md:mt-8 pt-4 md:pt-6 text-center">
                                 <p className="text-gray-400 text-sm">© {new Date().getFullYear()} IISPPR. All rights reserved.</p>
                             </div>
+                            <Link to="/login" className="hover:underline">Admin ?</Link>
                         </div>
                     </footer>
                 </div>

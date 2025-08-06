@@ -32,13 +32,14 @@ const router = createBrowserRouter([
       { path: 'testimonials', element: <Testimonials /> },
       { path: 'reports', element: <Reports /> },
       { path: 'articles', element: <Articles /> }, // ✅ Add this line
-      { path: '*', element: <NotFound /> }
+      { path: '*', element: <NotFound /> },
+      {
+        path: '/login', 
+        element: <LoginPage />,
+      },
     ]
   },
-  {
-    path: '/login', // ✅ Separate route outside Layout
-    element: <LoginPage />,
-  },
+  
   {
     path: '/admin',
     element: <AdminLayout />,
