@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const pages = ["home", "about", "gallery", "reports", "articles", "testimonials"];
+const pages = [
+  "home",
+  "about",
+  "gallery",
+  "reports",
+  "articles",
+  "testimonials",
+];
 
 const AdminAdManager = () => {
   const [allAds, setAllAds] = useState([]);
@@ -17,8 +24,6 @@ const AdminAdManager = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const backend = import.meta.env.VITE_BASE_URL;
 
-  console.log("allAds content:", allAds);
-
   useEffect(() => {
     fetchAds();
     fetchPageAds();
@@ -26,59 +31,33 @@ const AdminAdManager = () => {
 
   const fetchAds = async () => {
     try {
-      const res = await axios.get(`${backend}/api/ads`); // ✅ gets all ads from Advertisement model
-      setAllAds(res.data); // res.data is an array
+      const res = await axios.get(`${backend}/api/ads`);
+      setAllAds(res.data);
     } catch (err) {
       console.error("Failed to fetch ads:", err);
     }
   };
 
-
-
   const fetchPageAds = async () => {
     try {
       const res = await axios.get(`${backend}/api/pageads/getall`);
-
       const pageMap = {};
-
       res.data.data.forEach((entry) => {
         const page = entry.page;
         const position = entry.position;
         const ads = entry.adIds;
-
-        if (!pageMap[page]) {
-          pageMap[page] = [];
-        }
-
+        if (!pageMap[page]) pageMap[page] = [];
         ads.forEach((ad) => {
           pageMap[page].push({ ...ad, position });
         });
       });
-
       setAssignedAds(pageMap);
     } catch (err) {
       console.error("Failed to fetch assigned ads:", err);
     }
   };
 
-
   const handleAssign = async (adId) => {
-    try {
-      await axios.post(`${backend}/api/pageads`, {
-        adId,
-        pages: [activePage],
-        position: assignPosition,
-      });
-      setMessage("Ad assigned successfully.");
-      setShowAssignPanel(false);
-      fetchPageAds();
-    } catch (err) {
-      console.error("Failed to assign ad:", err);
-      setMessage("Failed to assign ad.");
-    }
-  };
-
-  const handleAssign1 = async (adId) => {
     try {
       await axios.post(`${backend}/api/pageads`, {
         adId,
@@ -107,13 +86,9 @@ const AdminAdManager = () => {
     }
   };
 
-
   const handleCreateAd = async (e) => {
     e.preventDefault();
-    if (!image || !title) {
-      alert("Image and title are required");
-      return;
-    }
+    if (!image || !title) return alert("Image and title are required");
 
     const formData = new FormData();
     formData.append("image", image);
@@ -137,7 +112,6 @@ const AdminAdManager = () => {
 
   const handleDeleteAds = async () => {
     if (selectedIds.length === 0) return alert("Select ads to delete.");
-
     try {
       await axios.delete(`${backend}/api/ads`, {
         data: { ids: selectedIds },
@@ -156,11 +130,20 @@ const AdminAdManager = () => {
   const bottomAds = adsForPage.filter((ad) => ad.position === "bottom");
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-10 space-y-10">
-      <h1 className="text-3xl font-bold text-gray-800">Admin Ad Manager</h1>
+    <div className="min-h-screen bg-[#f8f9fa] p-8">
+      <div className="bg-white rounded-xl p-6 shadow mb-6">
+        <div className="flex justify-between items-center">
+          <h3 className="text-2xl font-bold text-gray-800">Manage Ads</h3>
+          <button
+            onClick={() => setShowAssignPanel(!showAssignPanel)}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+          >
+            {showAssignPanel ? "Cancel" : "+ Assign Ad"}
+          </button>
+        </div>
+      </div>
 
-      {/* Tabs */}
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-2 mb-6">
         {pages.map((page) => (
           <button
             key={page}
@@ -169,10 +152,10 @@ const AdminAdManager = () => {
               setShowAssignPanel(false);
               setMessage("");
             }}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+            className={`px-4 py-2 rounded-full text-sm font-medium ${
               activePage === page
                 ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                : "bg-white border text-gray-700 hover:bg-gray-100"
             }`}
           >
             {page}
@@ -180,92 +163,62 @@ const AdminAdManager = () => {
         ))}
       </div>
 
-      {/* Assigned Ads */}
-      <section className="bg-white border rounded-xl p-6 shadow">
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">
-          Assigned Ads for "{activePage}"
-        </h2>
-
-        {topAds.length === 0 && bottomAds.length === 0 ? (
-          <div className="text-gray-500 mb-4">No ads assigned for this page.</div>
-        ) : (
-          <>
-            {topAds.length > 0 && (
-              <>
-                <h3 className="text-md font-semibold mt-2 text-gray-600">Top Ads</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4">
-                  {topAds.map((ad) => (
-                    <div key={ad._id} className="border rounded-lg p-2 shadow-sm">
-                      <img src={ad.imageUrl} alt={ad.title} className="w-full h-24 object-contain mb-2" />
-                      <p className="text-sm font-medium text-gray-700 truncate">{ad.title}</p>
-                      <button
-                        onClick={() => handleUnassign(ad._id,"top")}
-                        className="mt-2 w-full text-sm text-red-600 hover:text-red-800 transition"
-                      >
-                        Unassign
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-            {bottomAds.length > 0 && (
-              <>
-                <h3 className="text-md font-semibold mt-4 text-gray-600">Bottom Ads</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4">
-                  {bottomAds.map((ad) => (
-                    <div key={ad._id} className="border rounded-lg p-2 shadow-sm">
-                      <img src={ad.imageUrl} alt={ad.title} className="w-full h-24 object-contain mb-2" />
-                      <p className="text-sm font-medium text-gray-700 truncate">{ad.title}</p>
-                      <button
-                        onClick={() => handleUnassign(ad._id,"bottom")}
-                        className="mt-2 w-full text-sm text-red-600 hover:text-red-800 transition"
-                      >
-                        Unassign
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </>
-        )}
-
-        <div className="mt-6">
-          <button
-            onClick={() => setShowAssignPanel(!showAssignPanel)}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition"
-          >
-            {showAssignPanel ? "Cancel" : "Assign Ad"}
-          </button>
+      {(topAds.length > 0 || bottomAds.length > 0) && (
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-8">
+          {[...topAds, ...bottomAds].map((ad) => (
+            <div key={ad._id} className="bg-white rounded-lg shadow p-4">
+              <img
+                src={ad.imageUrl}
+                alt={ad.title}
+                className="w-full h-32 object-contain mb-2"
+              />
+              <h2 className="text-sm font-semibold text-gray-800 truncate">
+                {ad.title}
+              </h2>
+              <p className="text-xs text-gray-500">
+                {ad.position.toUpperCase()} Position
+              </p>
+              <button
+                onClick={() => handleUnassign(ad._id, ad.position)}
+                className="mt-3 bg-red-100 text-red-600 text-sm px-3 py-1 rounded hover:bg-red-200"
+              >
+                Unassign
+              </button>
+            </div>
+          ))}
         </div>
-      </section>
+      )}
 
-      {/* Assign Ad Panel */}
       {showAssignPanel && (
-        <section className="bg-white border rounded-xl p-6 shadow space-y-4">
-          <h2 className="text-xl font-semibold text-gray-700">Assign Ad to "{activePage}"</h2>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Ad Position</label>
+        <div className="bg-white rounded-xl shadow p-6 mb-6">
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">
+            Assign Ad to "{activePage}"
+          </h2>
+          <div className="mb-4">
+            <label className="text-sm font-medium">Ad Position</label>
             <select
               value={assignPosition}
               onChange={(e) => setAssignPosition(e.target.value)}
-              className="w-full border px-4 py-2 rounded"
+              className="w-full mt-1 border px-4 py-2 rounded"
             >
               <option value="top">Top</option>
               <option value="bottom">Bottom</option>
             </select>
           </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {Array.isArray(allAds) && allAds.map((ad) => (
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {allAds.map((ad) => (
               <div
                 key={ad._id}
-                className="border rounded-lg p-2 cursor-pointer hover:shadow-md transition"
+                className="bg-gray-50 border rounded-lg p-3 hover:shadow"
               >
-                <img src={ad.imageUrl} alt={ad.title} className="w-full h-24 object-contain mb-2" />
-                <p className="text-sm font-medium text-gray-700 truncate">{ad.title}</p>
+                <img
+                  src={ad.imageUrl}
+                  alt={ad.title}
+                  className="w-full h-24 object-contain mb-2"
+                />
+                <p className="text-sm font-medium text-gray-700 truncate">
+                  {ad.title}
+                </p>
                 <button
                   onClick={() => handleAssign(ad._id)}
                   className="mt-2 w-full bg-blue-600 text-white py-1 rounded hover:bg-blue-700 text-sm"
@@ -275,12 +228,14 @@ const AdminAdManager = () => {
               </div>
             ))}
           </div>
-        </section>
+        </div>
       )}
 
       {/* Create Ad */}
-      <section className="bg-white border rounded-xl p-6 shadow">
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">Create New Ad</h2>
+      <div className="bg-white rounded-xl shadow p-6 mb-6">
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+          Create New Ad
+        </h2>
         <form onSubmit={handleCreateAd} className="space-y-4">
           <input
             type="text"
@@ -310,14 +265,14 @@ const AdminAdManager = () => {
             Upload Ad
           </button>
         </form>
-      </section>
+      </div>
 
       {/* Delete Ads */}
-      <section className="bg-white border rounded-xl p-6 shadow">
+      <div className="bg-white rounded-xl shadow p-6 mb-6">
         <h2 className="text-xl font-semibold text-gray-700 mb-4">Delete Ads</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4">
-          {Array.isArray(allAds) && allAds.map((ad) => (
-            <div key={ad._id} className="border p-2 rounded">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+          {allAds.map((ad) => (
+            <div key={ad._id} className="border rounded p-2">
               <div className="flex items-center mb-2">
                 <input
                   type="checkbox"
@@ -331,9 +286,15 @@ const AdminAdManager = () => {
                     }
                   }}
                 />
-                <p className="text-sm font-medium text-gray-700 truncate">{ad.title}</p>
+                <p className="text-sm font-medium text-gray-700 truncate">
+                  {ad.title}
+                </p>
               </div>
-              <img src={ad.imageUrl} alt={ad.title} className="w-full h-24 object-contain" />
+              <img
+                src={ad.imageUrl}
+                alt={ad.title}
+                className="w-full h-24 object-contain"
+              />
             </div>
           ))}
         </div>
@@ -343,7 +304,7 @@ const AdminAdManager = () => {
         >
           Delete Selected Ads
         </button>
-      </section>
+      </div>
 
       {/* Message */}
       {message && (

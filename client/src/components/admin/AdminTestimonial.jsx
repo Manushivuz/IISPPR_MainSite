@@ -9,46 +9,42 @@ const TestimonialsAdmin = () => {
   const [formData, setFormData] = useState({
     author: "",
     text: "",
-    image: null, // Stores the File object for upload
+    image: null,
   });
   const [editingTestimonial, setEditingTestimonial] = useState(null);
-  const token = localStorage.getItem('adminToken');
+  const token = localStorage.getItem("adminToken");
   const backend = import.meta.env.VITE_BASE_URL;
 
-  // Function to fetch testimonials from the backend
-  const fetchTestimonials = async () => {
-    try {
-      setLoading(true);
-      // Assuming the API endpoint for testimonials is /api/testimonials
-      const res = await axios.get(`${backend}/api/testimonials/`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Include the token in the request headers
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(`${backend}/api/testimonials/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.data) {
+          setTestimonials(res.data);
+        } else {
+          setError("Failed to load testimonials");
         }
-      });
-      console.log(res);
-      if (res.data) {
-        setTestimonials(res.data); // Assuming 'documents' key holds the array of testimonials
-      } else {
-        setError("Failed to load testimonials");
+      } catch (err) {
+        console.error("Error fetching testimonials:", err);
+        setError("Error fetching testimonials");
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Error fetching testimonials:", err);
-      setError("Error fetching testimonials");
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  // Function to handle deleting a testimonial
+    fetchTestimonials();
+  }, []);
+
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this testimonial?")) return;
+    if (!window.confirm("Are you sure you want to delete this testimonial?"))
+      return;
     try {
-      // Assuming the DELETE API endpoint accepts an array of IDs in the request body
       const res = await axios.delete(`${backend}/api/testimonials/`, {
         data: { ids: [id] },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (res.data) {
         setTestimonials((prev) => prev.filter((t) => t._id !== id));
@@ -61,118 +57,132 @@ const TestimonialsAdmin = () => {
     }
   };
 
-  // Function to handle adding or updating a testimonial
   const handleAddOrUpdateTestimonial = async (e) => {
     e.preventDefault();
     const form = new FormData();
     form.append("author", formData.author);
     form.append("text", formData.text);
-    if (formData.image) {
-      form.append("image", formData.image); // Append the image file to FormData
-    }
+    if (formData.image) form.append("image", formData.image);
 
     try {
       let res;
       if (editingTestimonial) {
-        // If editing, send a PUT request to update the existing testimonial
-        res = await axios.put(`${backend}/api/testimonials/${editingTestimonial._id}`, form, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data", // Essential for file uploads
-          },
-        });
+        res = await axios.put(
+          `${backend}/api/testimonials/${editingTestimonial._id}`,
+          form,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
       } else {
-        // If not editing, send a POST request to add a new testimonial
         res = await axios.post(`${backend}/api/testimonials/`, form, {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data", // Essential for file uploads
+            "Content-Type": "multipart/form-data",
           },
         });
       }
 
       if (res.data) {
         if (editingTestimonial) {
-          // Update the testimonial in the local state
           setTestimonials((prev) =>
             prev.map((t) => (t._id === res.data._id ? res.data : t))
           );
         } else {
-          // Add the new testimonial to the beginning of the local state
           setTestimonials((prev) => [res.data, ...prev]);
         }
-        closeModal(); // Close the modal and reset form
+        closeModal();
       } else {
         alert(`Failed to ${editingTestimonial ? "update" : "add"} testimonial`);
       }
     } catch (err) {
-      console.error(`Error ${editingTestimonial ? "updating" : "adding"} testimonial:`, err);
+      console.error(
+        `Error ${editingTestimonial ? "updating" : "adding"} testimonial:`,
+        err
+      );
       alert(`Error ${editingTestimonial ? "updating" : "adding"} testimonial`);
     }
   };
 
-  // Opens the modal for adding a new testimonial
   const openAddModal = () => {
-    setEditingTestimonial(null); // Clear any editing state
-    setFormData({ author: "", text: "", image: null }); // Reset form data
+    setEditingTestimonial(null);
+    setFormData({ author: "", text: "", image: null });
     setShowModal(true);
   };
 
-  // Opens the modal for editing an existing testimonial
   const openEditModal = (testimonial) => {
-    setEditingTestimonial(testimonial); // Set the testimonial to be edited
-    setFormData({ author: testimonial.author, text: testimonial.text, image: null }); // Pre-fill form with existing data, image is not pre-filled for security
+    setEditingTestimonial(testimonial);
+    setFormData({
+      author: testimonial.author,
+      text: testimonial.text,
+      image: null,
+    });
     setShowModal(true);
   };
 
-  // Closes the modal and resets all related states
   const closeModal = () => {
     setShowModal(false);
     setFormData({ author: "", text: "", image: null });
     setEditingTestimonial(null);
   };
 
-  // Fetch testimonials on component mount
-  useEffect(() => {
-    fetchTestimonials();
-  }, []);
-
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h2 className="text-3xl font-bold mb-8 text-gray-800 text-center">Manage Testimonials</h2>
+    <div className="min-h-screen bg-[#f8f9fa] px-4 sm:px-6 md:px-8 pt-28 pb-10">
+      {/* Page Heading */}
+      <div className="bg-[#1E1E2F] text-white rounded-2xl px-6 py-4 shadow mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <h3 className="text-2xl font-semibold text-center sm:text-left">
+          Manage Testimonials
+        </h3>
+        <button
+          onClick={openAddModal}
+          className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full w-full sm:w-auto"
+        >
+          + Add Testimonial
+        </button>
+      </div>
 
+      {/* Content */}
       {loading ? (
-        <p className="text-gray-600 text-center">Loading testimonials...</p>
+        <p className="text-gray-500 text-center mt-10">
+          Loading testimonials...
+        </p>
       ) : error ? (
-        <p className="text-red-500 text-center">{error}</p>
+        <p className="text-red-500 text-center mt-10">{error}</p>
       ) : testimonials.length === 0 ? (
-        <p className="text-gray-600 text-center">No testimonials found. Add one to get started!</p>
+        <p className="text-gray-600 text-center mt-10">
+          No testimonials found.
+        </p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.map((testimonial) => (
             <div
               key={testimonial._id}
-              className="bg-white p-6 rounded-xl shadow-lg border border-gray-200 space-y-4 flex flex-col items-center text-center"
+              className="bg-white rounded-2xl shadow-md p-6 text-center space-y-3 hover:shadow-lg transition-all"
             >
               <img
-                src={testimonial.imageUrl || "/placeholder.svg?height=100&width=100&query=person-avatar"}
+                src={testimonial.imageUrl || "/placeholder.svg"}
                 alt={testimonial.author}
-                className="w-24 h-24 rounded-full object-cover border-2 border-blue-500 shadow-md"
-                width={100}
-                height={100}
+                className="w-24 h-24 mx-auto rounded-full object-cover border-2 border-blue-500 shadow"
               />
-              <h3 className="text-xl font-semibold text-gray-900">{testimonial.author}</h3>
-              <p className="text-base text-gray-700 italic">{"\""}{testimonial.text}{"\""}</p>
-              <div className="flex gap-3 mt-4">
+              <h3 className="text-lg font-semibold text-gray-800">
+                {testimonial.author}
+              </h3>
+              <p className="text-sm text-gray-600 italic">
+                "{testimonial.text}"
+              </p>
+              <div className="flex justify-center gap-4 mt-4">
                 <button
                   onClick={() => openEditModal(testimonial)}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 text-sm font-medium shadow-sm"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition font-medium"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(testimonial._id)}
-                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 text-sm font-medium shadow-sm"
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 transition font-medium"
                 >
                   Delete
                 </button>
@@ -182,78 +192,76 @@ const TestimonialsAdmin = () => {
         </div>
       )}
 
-      {/* Add Testimonial Button */}
-      <div className="mt-12 flex justify-center">
-        <button
-          onClick={openAddModal}
-          className="px-8 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-200 text-lg font-semibold shadow-lg"
-        >
-          + Add Testimonial
-        </button>
-      </div>
-
-      {/* Modal for Add/Edit Testimonial */}
+      {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-          <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg relative transform transition-all duration-300 scale-100 opacity-100">
-            <h3 className="text-2xl font-bold mb-6 text-gray-800 text-center">
-              {editingTestimonial ? "Edit Testimonial" : "Add New Testimonial"}
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-xl p-6">
+            <h3 className="text-2xl font-bold mb-4 text-center text-gray-800">
+              {editingTestimonial ? "Edit Testimonial" : "Add Testimonial"}
             </h3>
-            <form onSubmit={handleAddOrUpdateTestimonial} className="space-y-5">
+            <form onSubmit={handleAddOrUpdateTestimonial} className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Author Name
                 </label>
                 <input
-                  id="name"
                   type="text"
                   required
-                  placeholder="Testimonial Author Name"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
+                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter author name"
                   value={formData.author}
-                  onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, author: e.target.value })
+                  }
                 />
               </div>
               <div>
-                <label htmlFor="text" className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Testimonial Text
                 </label>
                 <textarea
-                  id="text"
+                  rows={4}
                   required
-                  placeholder="Enter testimonial text here..."
-                  rows={5}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y text-gray-800"
+                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter testimonial"
                   value={formData.text}
-                  onChange={(e) => setFormData({ ...formData, text: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, text: e.target.value })
+                  }
                 />
               </div>
               <div>
-                <label htmlFor="image-upload" className="block text-sm font-medium text-gray-700 mb-1">
-                  {editingTestimonial ? "Upload New Image (optional)" : "Upload Image"}
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {editingTestimonial
+                    ? "Replace Image (optional)"
+                    : "Upload Image"}
                 </label>
                 <input
-                  id="image-upload"
                   type="file"
-                  required={!editingTestimonial} // Image is required only for new testimonials
-                  accept="image/*" // Accept all image types
-                  className="w-full p-3 border border-gray-300 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
-                  onChange={(e) => setFormData({ ...formData, image: e.target.files ? e.target.files[0] : null })}
+                  accept="image/*"
+                  required={!editingTestimonial}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      image: e.target.files?.[0] || null,
+                    })
+                  }
+                  className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
               </div>
-              <div className="flex justify-end gap-4 mt-6">
+              <div className="flex justify-end gap-4 pt-4">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200 font-medium"
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+                  className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >
-                  {editingTestimonial ? "Update Testimonial" : "Add Testimonial"}
+                  {editingTestimonial ? "Update" : "Add"}
                 </button>
               </div>
             </form>
