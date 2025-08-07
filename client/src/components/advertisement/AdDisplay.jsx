@@ -3,11 +3,12 @@ import axios from 'axios';
 
 const AdDisplay = ({ pageType, position }) => {
   const [ad, setAd] = useState(null);
+  const backend = import.meta.env.VITE_BASE_URL;
 
   useEffect(() => {
     const fetchAd = async () => {
       try {
-        const res = await axios.get("/api/pageads", {
+        const res = await axios.get(`${backend}/api/pageads`, {
           params: { page: pageType, position }, // ✅ pass both
         });
 
