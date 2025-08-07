@@ -19,6 +19,8 @@ import AdminTestimonials from '../components/admin/AdminTestimonial';
 import PageWithAd from '../components/advertisement/PageWithAd';
 import AdminAdManager from '../components/admin/AdminAdManager';
 
+
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -34,18 +36,18 @@ const router = createBrowserRouter([
       { path: 'articles', element: <Articles /> }, // ✅ Add this line
       { path: '*', element: <NotFound /> },
       {
-        path: '/login', 
+        path: '/login',
         element: <LoginPage />,
       },
     ]
   },
-  
+
   {
     path: '/admin',
     element: <AdminLayout />,
     children: [
       { path: 'ads', element: <Ads /> },
-      {path: 'adminads', element: <AdminAdManager/>},
+      { path: 'adminads', element: <AdminAdManager /> },
       { path: 'report', element: <AdminReports /> },
       { path: 'articles', element: <AdminArticles /> },
       { path: 'testimonials', element: <AdminTestimonials /> },
@@ -60,7 +62,7 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       { path: 'ads', element: <Ads /> },
-      {path: 'adminads', element: <AdminAdManager/>},
+      { path: 'adminads', element: <AdminAdManager /> },
       { path: 'report', element: <AdminReports /> },
       { path: 'articles', element: <AdminArticles /> },
       { path: 'testimonials', element: <AdminTestimonials /> },

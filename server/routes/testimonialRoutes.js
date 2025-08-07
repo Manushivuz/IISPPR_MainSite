@@ -9,8 +9,10 @@ const upload = multer({ dest: "uploads/" });
 // Public routes
 router.get("/", testimonialController.getAllTestimonials);
 
+
 // Admin routes
 router.post("/", isAdmin, upload.single("image"), testimonialController.createTestimonial);
+router.put("/:id", isAdmin, upload.single("image"), testimonialController.updateTestimonial);
 
 // Modified route to delete one or more testimonials (expects IDs in the request body)
 router.delete("/", isAdmin, testimonialController.deleteTestimonials);
