@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,19 +20,20 @@ const LoginPage = () => {
       return setError('Please enter both email and password');
     }
 
+
+
     setLoading(true);
     setError('');
 
     try {
-      const res = await fetch(`${backend}/api/admin/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      const res = await axios.post(`${backend}/api/auth/login`, {
+        email: formData.email,
+        password: formData.password,
+      })
 
-      const data = await res.json();
-
-      if (data.success) {
+      const data = await res.data;
+      console.log('Login response:', data);
+      if (data) {
         // Save token if present
         if (data.token) {
           localStorage.setItem('adminToken', data.token);
@@ -81,9 +83,8 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 mt-2 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition duration-200 ${
-              loading ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            className={`w-full py-3 mt-2 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition duration-200 ${loading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
           >
             {loading ? 'Signing In...' : 'Sign In'}
           </button>
