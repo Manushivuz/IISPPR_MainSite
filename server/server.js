@@ -7,8 +7,9 @@ import documentRoutes from "./routes/documentRoutes.js";
 import adRoutes from "./routes/adRoutes.js";
 import pageAdRoutes from "./routes/pageAd.js";
 import testimonialRoutes from "./routes/testimonialRoutes.js";
-
-// Load env vars
+import authRoutes from "./routes/authRoutes.js";
+import helmet from "helmet";
+import morgan from "morgan";
 
 
 connectDB();
@@ -19,8 +20,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-
+app.use(helmet());
+app.use(morgan("dev"));
 app.use("/api/documents", documentRoutes);
 
 
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 });
 
 // API routes
+app.use("/api/auth", authRoutes);
 app.use("/api/ads", adRoutes);
 app.use("/api/pageads", pageAdRoutes);
 app.use("/api/testimonials", testimonialRoutes)

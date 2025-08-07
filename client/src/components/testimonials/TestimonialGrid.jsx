@@ -46,7 +46,7 @@ const testimonials = [
 ];
 
 
-const SeeMoreData = [
+const initialSeeMoreData = [
     {
         name: "A. Mark Kamara Jr.",
         testimonialData: "Wonderful experience with the fellowship! I gained valuable insights into R and SPSS, and appreciated the focus on time management. The structure of the sessions helped reinforce learning effectively and efficiently.",
@@ -144,6 +144,8 @@ const TestimonialGrid = () => {
     const scrollContainerRef = useRef(null)
     // State to track if user is hovering over the container
     const [isHovering, setIsHovering] = useState(false)
+    const [seeMoreData, setSeeMoreData] = useState(initialSeeMoreData)
+    const backend = import.meta.env.VITE_BASE_URL
 
     // Auto-scrolling effect
     useEffect(() => {
@@ -178,6 +180,25 @@ const TestimonialGrid = () => {
             cancelAnimationFrame(animationFrameId)
         }
     }, [isHovering])
+
+    useEffect(() => {
+        fetch(`${backend}/api/testimonials`)
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    // Map backend testimonials to SeeMoreData format
+                    const backendTestimonials = data.map(t => ({
+                        name: t.author || "Anonymous",
+                        testimonialData: t.text,
+                        imageSrc: t.imageUrl || "/home/default.webp"
+                    }))
+                    setSeeMoreData(prev => [...prev, ...backendTestimonials])
+                }
+            })
+            .catch(err => {
+                console.error("Failed to fetch testimonials:", err)
+            })
+    }, [])
 
     const scrollbarHideStyles = `
         .scrollbar-hide {
@@ -279,7 +300,7 @@ const TestimonialGrid = () => {
                                 onMouseLeave={() => setIsHovering(false)}
                                 style={{ scrollBehavior: "smooth" }}
                             >
-                                {SeeMoreData.map((t, index) => (
+                                {seeMoreData.map((t, index) => (
                                     <div key={index} className="flex-shrink-0  flex items-center justify-between text-[#FFFFFF]  w-96 bg-[#0E1705]/85 pt-8 p-6 rounded-xl shadow-lg ">
                                         <div className="flex flex-col items-center justify-center">
                                             <div className="w-[80px] h-[80px] bg-[#ffffff] rounded-full overflow-hidden mr-3">
